@@ -69,3 +69,6 @@ The model includes a text cleaning pipeline that handles:
 - Case normalization
 - Common vulgar word variations
 - Special character substitutions
+
+<img width="350" alt="image" src="https://github.com/user-attachments/assets/44a9e108-f726-436b-84a9-f78b5d2c3d8f" />
+
