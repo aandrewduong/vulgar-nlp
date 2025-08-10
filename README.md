@@ -5,9 +5,11 @@ A BERT (Bidirectional Encoder Representations from Transformers) based text clas
 More on BERT: https://research.google/blog/open-sourcing-bert-state-of-the-art-pre-training-for-natural-language-processing/
 ## Features
 
-- Text classification using BERT (bert-base-uncased)
-- Handles common vulgar word variations and substitutions
-- Text cleaning and normalization
+- **Text classification using BERT** (`bert-base-uncased`)
+- **Robust text normalization**: unicode NFKC, zero-width removal, leetspeak/obfuscation normalization, repetition collapsing
+- **Handles common vulgar word variations and substitutions** with regex canonicalization
+- **Training improvements**: metrics (accuracy/precision/recall/F1), early stopping, class weighting for imbalance, label mappings
+- **Flexible CLI**: single text or file input, JSON output, configurable threshold/device/max length
 
 ## Installation
 
@@ -19,7 +21,7 @@ cd vulgar-nlp
 
 2. Install the required dependencies:
 ```bash
-pip install torch transformers datasets
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -52,13 +54,20 @@ print(f"Is vulgar: {is_vulgar}, Confidence: {confidence:.2f}")
 ```
 
 ```bash
+# Single text
 python cli.py --text "Shut up"
+
+# From a file (one text per line)
+python cli.py --file path/to/texts.txt
+
+# JSON lines output with custom threshold and device
+python cli.py --file path/to/texts.txt --json --threshold 0.6 --device mps
 ```
 
 ## Model Details
 
 - Base Model: BERT (bert-base-uncased https://huggingface.co/google-bert/bert-base-uncased)
-- Max sequence length: 64 tokens
+- Max sequence length: 128 tokens (configurable)
 - Binary classification (vulgar/non-vulgar)
 - Training epochs: 4
 - Batch size: 8
@@ -66,7 +75,8 @@ python cli.py --text "Shut up"
 ## Text Cleaning
 
 The model includes a text cleaning pipeline that handles:
-- Case normalization
-- Common vulgar word variations
-- Special character substitutions
+- Unicode normalization (NFKC) and zero-width character removal
+- Case normalization and whitespace collapsing
+- Basic leetspeak/obfuscation normalization (e.g., `@`->`a`, `0`->`o`, `5`->`s`)
+- Common vulgar word canonicalization
 
