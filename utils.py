@@ -7,18 +7,24 @@ from transformers import AutoTokenizer
 ZERO_WIDTH_PATTERN = re.compile(r"[\u200B-\u200D\uFEFF]")
 WHITESPACE_PATTERN = re.compile(r"\s+")
 
-# Basic leetspeak/obfuscation normalization
+# Comprehensive leetspeak/obfuscation normalization
 OBFUSCATION_MAP: Dict[str, str] = {
     "0": "o",
     "1": "i",
+    "l": "i",
     "3": "e",
     "4": "a",
+    "6": "g",
+    "9": "g",
     "@": "a",
     "$": "s",
     "5": "s",
     "7": "t",
     "+": "t",
     "8": "b",
+    "!": "i",
+    "|": "i",
+    "*": "",  # Often used to censor: f*ck -> fck
 }
 
 # Canonicalize common vulgar word variants to reduce sparse forms

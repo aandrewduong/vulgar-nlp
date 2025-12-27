@@ -16,12 +16,22 @@ def _select_device(preferred_device: Optional[str] = None) -> torch.device:
     return torch.device("cpu")
 
 
+# Global cache to avoid reloading model/tokenizer on every prediction
+_CACHE = {}
+
+
 def load_model(model_dir: str = "model", device: Optional[str] = None):
-    """Load tokenizer and model, moved to the requested device."""
+    """Load tokenizer and model, moved to the requested device. Results are cached."""
+    cache_key = (model_dir, device)
+    if cache_key in _CACHE:
+        return _CACHE[cache_key]
+
     tokenizer = get_tokenizer(model_dir)
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
     model.eval()
     model.to(_select_device(device))
+
+    _CACHE[cache_key] = (tokenizer, model)
     return tokenizer, model
 
 
